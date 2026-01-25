@@ -1,26 +1,810 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png"> 
-  <title>Frontend Mentor | QR code component</title>
-  <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfolio — Projets</title>
+  <meta name="description" content="Portfolio — une sélection de projets." />
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#0f1731;
+      --card:rgba(255,255,255,.06);
+      --border:rgba(255,255,255,.10);
+      --text:#eaf0ff;
+      --muted:#b8c4ff;
+      --shadow:0 18px 60px rgba(0,0,0,.45);
+      --r:20px;
+      --max:1120px;
+
+      --accentA: rgba(99,102,241,.90);
+      --accentB: rgba(34,197,94,.78);
+      --accentC: rgba(236,72,153,.80);
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(900px 520px at 10% 10%, rgba(99,102,241,.20), transparent 60%),
+        radial-gradient(900px 520px at 85% 0%, rgba(34,197,94,.14), transparent 60%),
+        radial-gradient(900px 520px at 50% 100%, rgba(236,72,153,.12), transparent 60%),
+        var(--bg);
+      min-height:100vh;
+    }
+    a{color:inherit}
+    .wrap{max-width:var(--max); margin:0 auto; padding:24px}
+    header{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(to bottom, rgba(11,16,32,.86), rgba(11,16,32,.55));
+      border-bottom:1px solid var(--border);
+    }
+    .nav{
+      max-width:var(--max); margin:0 auto; padding:14px 24px;
+      display:flex; align-items:center; justify-content:space-between; gap:14px;
+    }
+    .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.3px}
+    .logo{
+      width:34px;height:34px;border-radius:12px;
+      background: linear-gradient(135deg, var(--accentA), var(--accentB));
+      box-shadow: var(--shadow);
+      flex:0 0 auto;
+    }
+    .brand small{display:block; font-weight:600; color:var(--muted); letter-spacing:0; margin-top:1px}
+    nav{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+    nav a{
+      text-decoration:none; color:var(--muted);
+      padding:8px 10px; border-radius:12px; border:1px solid transparent;
+    }
+    nav a:hover{color:var(--text); border-color:var(--border)}
+    .btn{
+      cursor:pointer;
+      padding:10px 14px; border-radius:14px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      font-weight:650;
+    }
+    .btn:hover{background: rgba(255,255,255,.10)}
+    .primary{
+      border-color: rgba(99,102,241,.55);
+      background: linear-gradient(135deg, rgba(99,102,241,.85), rgba(34,197,94,.60));
+    }
+    .primary:hover{filter:brightness(1.06)}
+    .ghost{background:transparent}
+
+    section{scroll-margin-top:90px}
+    .card{
+      background: rgba(15,23,49,.70);
+      border:1px solid var(--border);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding:22px;
+    }
+
+    /* HERO */
+    .hero{
+      padding:46px 0 10px;
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:16px;
+      align-items:stretch;
+    }
+    @media (max-width: 920px){ .hero{grid-template-columns:1fr} }
+    h1{
+      margin:0 0 10px;
+      font-size:48px;
+      line-height:1.05;
+      letter-spacing:-.9px;
+    }
+    @media (max-width: 520px){ h1{font-size:34px} }
+    .subtitle{margin:0 0 16px; color:var(--muted); line-height:1.65}
+    .cta{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .pillrow{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
+    .pill{
+      font-size:13px; color:var(--muted);
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      padding:8px 10px; border-radius:999px;
+    }
+    .mini{
+      display:grid; gap:12px;
+      position:relative;
+      overflow:hidden;
+    }
+    .mini:before{
+      content:"";
+      position:absolute; inset:-90px -120px auto auto;
+      width:260px; height:260px; border-radius:999px;
+      background: radial-gradient(circle at 30% 30%, rgba(99,102,241,.45), transparent 60%);
+      filter: blur(0px);
+      pointer-events:none;
+    }
+    .mini h2{margin:0; font-size:18px}
+    .muted{color:var(--muted); line-height:1.65}
+
+    /* TOOLBAR */
+    .toolbar{
+      margin-top:14px;
+      display:flex; gap:10px; flex-wrap:wrap;
+      align-items:center; justify-content:space-between;
+    }
+    .leftTools{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .rightTools{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .input{
+      display:flex; align-items:center; gap:10px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.18);
+      border-radius: 14px;
+      padding:10px 12px;
+      min-width: min(520px, calc(100vw - 48px));
+    }
+    .input input{
+      border:none; outline:none; background:transparent; color:var(--text);
+      font: inherit; width:100%;
+    }
+    .chipbar{display:flex; gap:8px; flex-wrap:wrap}
+    .chip{
+      cursor:pointer;
+      font-size:12px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      padding:7px 10px;
+      border-radius:999px;
+      color:var(--muted);
+      user-select:none;
+    }
+    .chip:hover{color:var(--text)}
+    .chip.active{
+      color:var(--text);
+      border-color: rgba(99,102,241,.55);
+      background: rgba(99,102,241,.14);
+    }
+
+    /* PROJECT GRID */
+    .section-title{
+      display:flex; align-items:baseline; justify-content:space-between; gap:10px;
+      margin:18px 0 10px;
+    }
+    .section-title h2{margin:0; font-size:22px}
+    .small{font-size:13px; color:var(--muted)}
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:14px;
+    }
+    @media (max-width: 980px){ .grid{grid-template-columns: repeat(2, 1fr)} }
+    @media (max-width: 620px){ .grid{grid-template-columns: 1fr} }
+
+    .pCard{
+      position:relative;
+      background: rgba(15,23,49,.66);
+      border:1px solid var(--border);
+      border-radius: var(--r);
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+      display:flex;
+      flex-direction:column;
+      min-height: 320px;
+    }
+    .pCard:hover{
+      transform: translateY(-3px);
+      border-color: rgba(99,102,241,.40);
+      background: rgba(15,23,49,.78);
+    }
+    .thumb{
+      height: 160px;
+      background:
+        radial-gradient(120px 120px at 20% 30%, rgba(99,102,241,.40), transparent 60%),
+        radial-gradient(140px 140px at 80% 10%, rgba(34,197,94,.25), transparent 60%),
+        radial-gradient(180px 180px at 60% 90%, rgba(236,72,153,.22), transparent 60%),
+        rgba(255,255,255,.03);
+      border-bottom:1px solid var(--border);
+      position:relative;
+      display:flex;
+      align-items:flex-end;
+      padding:14px;
+    }
+    .badge{
+      font-size:12px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.20);
+      color:var(--muted);
+      padding:6px 10px;
+      border-radius:999px;
+      backdrop-filter: blur(10px);
+    }
+    .pBody{padding:16px; display:grid; gap:10px; flex:1}
+    .pTitle{font-weight:850; letter-spacing:-.2px; font-size:16px}
+    .pDesc{color:var(--muted); line-height:1.55; font-size:14px}
+    .tagrow{display:flex; gap:8px; flex-wrap:wrap; margin-top:2px}
+    .tag{
+      font-size:12px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.16);
+      padding:6px 8px;
+      border-radius:999px;
+      color:var(--muted);
+    }
+    .pActions{
+      display:flex; gap:10px; flex-wrap:wrap;
+      padding:14px 16px 16px;
+      border-top:1px solid var(--border);
+    }
+    .link{
+      text-decoration:none;
+      font-weight:650;
+      color:var(--text);
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      padding:9px 12px;
+      border-radius: 14px;
+    }
+    .link:hover{background: rgba(255,255,255,.10)}
+    .link.primary{
+      border-color: rgba(99,102,241,.55);
+      background: rgba(99,102,241,.14);
+    }
+
+    /* MODAL */
+    .backdrop{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:200;
+    }
+    .modal{
+      width:min(960px, 100%);
+      max-height: min(86vh, 860px);
+      overflow:auto;
+      background: rgba(15,23,49,.92);
+      border:1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+    }
+    .mTop{
+      position:sticky; top:0;
+      background: linear-gradient(to bottom, rgba(15,23,49,.98), rgba(15,23,49,.86));
+      border-bottom:1px solid var(--border);
+      padding:14px 16px;
+      display:flex; justify-content:space-between; gap:12px; align-items:flex-start;
+      backdrop-filter: blur(12px);
+      z-index:5;
+    }
+    .mTop h3{margin:0; font-size:18px; letter-spacing:-.2px}
+    .mTop .mMeta{color:var(--muted); font-size:13px; margin-top:4px}
+    .mClose{padding:9px 12px; border-radius:14px}
+    .mBody{padding:16px}
+    .mGrid{
+      display:grid; grid-template-columns: 1.2fr .8fr; gap:14px;
+    }
+    @media (max-width: 900px){ .mGrid{grid-template-columns:1fr} }
+    .mPanel{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      border-radius: 18px;
+      padding:14px;
+    }
+    .mPanel h4{margin:0 0 8px; font-size:14px; letter-spacing:.2px; text-transform:uppercase; color:var(--muted)}
+    .list{margin:0; padding-left:18px; color:var(--muted); line-height:1.7}
+    .kpi{display:grid; grid-template-columns: repeat(2, 1fr); gap:10px}
+    @media (max-width: 520px){ .kpi{grid-template-columns:1fr} }
+    .kpi .box{
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.14);
+      border-radius: 16px;
+      padding:12px;
+    }
+    .kpi strong{display:block}
+    .kpi span{color:var(--muted); font-size:13px}
+    footer{padding:26px 0 40px; color:var(--muted); text-align:center}
+
+    /* TOAST */
+    .toast{
+      position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+      background: rgba(15,23,49,.95);
+      border:1px solid var(--border);
+      padding:10px 12px;border-radius:14px;
+      box-shadow: var(--shadow);
+      display:none;
+      max-width:min(620px, calc(100vw - 24px));
+      z-index:300;
+    }
+  </style>
 </head>
 <body>
-  <p class="TIT">Coded by <a href="#">YAYA DIA.
-    
-  </a></p>
-  <div class="container">
-      <div class="card">
-        <img src="image-qr-code.png" alt="">
-        <div class="text">
-          <h2>Improve your front-end skills by building projects</h2>
-          <p> Scan the QR code to visit Frontend Mentor and take your coding skills to the next level</p>
+  <header>
+    <div class="nav">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <div id="name">[Ton Nom]</div>
+          <small id="role">Portfolio — projets</small>
         </div>
-      </div>      
-  </div> 
+      </div>
 
+      <nav aria-label="Navigation">
+        <a href="#projects">Projets</a>
+        <a href="#contact">Contact</a>
+        <button class="btn ghost" id="themeBtn" type="button">Mode clair/sombre</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- HERO -->
+    <section class="hero" id="top">
+      <div class="card">
+        <h1 id="headline">Je construis des projets utiles, propres, et bien finis.</h1>
+        <p class="subtitle" id="subheadline">
+          Portfolio “projects-only”. Chaque carte = un projet, avec objectifs, stack, et résultats.<br/>
+          Remplace juste les infos dans <strong>PROJECTS</strong> et c’est prêt.
+        </p>
+
+        <div class="cta">
+          <a class="btn primary" href="#projects">Voir les projets</a>
+          <a class="btn" href="#contact">Me contacter</a>
+        </div>
+
+        <div class="pillrow">
+          <div class="pill">🧩 [Domaine: web / mécanique / data]</div>
+          <div class="pill">⚡ [Style: clean / performant]</div>
+          <div class="pill">📍 [Ville]</div>
+        </div>
+      </div>
+
+      <div class="card mini">
+        <h2>Focus</h2>
+        <p class="muted" id="focusText">
+          Une sélection de projets (école, perso, freelance). Clique sur “Détails” pour une fiche complète.
+        </p>
+
+        <div class="kpi">
+          <div class="box"><strong id="kpiProjects">0</strong><span>projets listés</span></div>
+          <div class="box"><strong id="kpiTags">0</strong><span>technos / tags</span></div>
+        </div>
+
+        <div class="pillrow" id="quickLinks">
+          <a class="pill" href="#" onclick="openLink('[lien github]');return false;">GitHub</a>
+          <a class="pill" href="#" onclick="openLink('[lien linkedin]');return false;">LinkedIn</a>
+          <a class="pill" href="#" onclick="openLink('mailto:[email]');return false;">Email</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects">
+      <div class="section-title">
+        <h2>Projets</h2>
+        <span class="small" id="countLabel">—</span>
+      </div>
+
+      <div class="toolbar">
+        <div class="leftTools">
+          <div class="input" title="Recherche">
+            🔎
+            <input id="search" placeholder="Rechercher par titre, tag, stack, description…" />
+          </div>
+        </div>
+        <div class="rightTools">
+          <button class="btn" id="clearBtn" type="button">Réinitialiser</button>
+        </div>
+      </div>
+
+      <div class="chipbar" id="chips" style="margin-top:10px"></div>
+
+      <div class="grid" id="grid" style="margin-top:14px"></div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" style="margin-top:18px">
+      <div class="section-title">
+        <h2>Contact</h2>
+        <span class="small">simple & direct</span>
+      </div>
+      <div class="card">
+        <p class="muted">
+          ✉️ <strong>[email]</strong> · 🔗 <strong>[LinkedIn]</strong> · 💻 <strong>[GitHub]</strong><br/>
+          Si tu veux, je peux aussi te faire une version multi-pages (une page par projet / case study).
+        </p>
+      </div>
+    </section>
+
+    <footer>
+      © <span id="year"></span> — [Ton Nom]
+    </footer>
+  </main>
+
+  <!-- MODAL -->
+  <div class="backdrop" id="backdrop" role="dialog" aria-modal="true" aria-label="Détails du projet">
+    <div class="modal" id="modal">
+      <div class="mTop">
+        <div>
+          <h3 id="mTitle">Titre</h3>
+          <div class="mMeta" id="mMeta">Meta</div>
+        </div>
+        <button class="btn mClose" id="closeBtn" type="button">Fermer</button>
+      </div>
+      <div class="mBody">
+        <div class="mGrid">
+          <div class="mPanel">
+            <h4>Résumé</h4>
+            <p class="muted" id="mSummary" style="margin:0"></p>
+            <hr style="border:none;border-top:1px solid var(--border); margin:14px 0">
+            <h4>Ce que j’ai fait</h4>
+            <ul class="list" id="mBullets"></ul>
+          </div>
+          <div class="mPanel">
+            <h4>Stack</h4>
+            <div class="tagrow" id="mTags"></div>
+            <hr style="border:none;border-top:1px solid var(--border); margin:14px 0">
+            <h4>Liens</h4>
+            <div style="display:flex; gap:10px; flex-wrap:wrap" id="mLinks"></div>
+            <hr style="border:none;border-top:1px solid var(--border); margin:14px 0">
+            <h4>Résultats</h4>
+            <div class="kpi" id="mKpis"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    // ====== 1) REMPLIS ICI TES PROJETS ======
+    // Tips:
+    // - thumbLabel: petit badge sur l’image
+    // - tags: mots-clés (stack + domaine)
+    // - links: {label, url}
+    // - kpis: {title, value} -> résultats / métriques
+    const PROJECTS = [
+      {
+        title: "Banc de test — refroidissement (inverter)",
+        year: "2025",
+        category: "Mécanique",
+        thumbLabel: "Design & test",
+        summary: "Conception d’un banc de test pour radiateurs et cold plates: instrumentation, protocole, et analyse.",
+        description: "Projet étudiant: objectif = mesurer performance thermique et pertes de charge dans différents scénarios.",
+        bullets: [
+          "Définition des exigences & architecture du banc",
+          "Choix instrumentation (T°, débit, ΔP) et plan d’essais",
+          "Analyse des résultats + recommandations de design"
+        ],
+        tags: ["Thermique", "Instrumentation", "Test bench", "CAO"],
+        links: [
+          { label: "Détails", url: "#", kind: "details" },
+          { label: "Rapport", url: "[lien rapport]", kind: "external" }
+        ],
+        kpis: [
+          { title: "Capteurs", value: "T° / débit / ΔP" },
+          { title: "Livrable", value: "protocole + analyse" }
+        ]
+      },
+      {
+        title: "Projet Python — jeu Quixo (API)",
+        year: "2025",
+        category: "Logiciel",
+        thumbLabel: "Python",
+        summary: "Implémentation d’un client Quixo: appels API, logique de jeu, formatage du plateau, gestion d’erreurs.",
+        description: "Focus sur robustesse (HTTP codes, JSON), architecture modulaire, et tests.",
+        bullets: [
+          "Endpoints GET/POST/PUT + auth",
+          "Classes Plateau / Quixo + exceptions",
+          "Affichage console + validations des coups"
+        ],
+        tags: ["Python", "API", "OOP", "Tests"],
+        links: [
+          { label: "Détails", url: "#", kind: "details" },
+          { label: "Code", url: "[lien github]", kind: "external" }
+        ],
+        kpis: [
+          { title: "Modules", value: "api / quixo / plateau" },
+          { title: "Qualité", value: "gestion erreurs" }
+        ]
+      },
+      {
+        title: "Projet web — Portfolio",
+        year: "2026",
+        category: "Web",
+        thumbLabel: "Frontend",
+        summary: "Portfolio minimal avec filtres, recherche, et fiches projets (inspiré d’un style clean).",
+        description: "Site statique facile à héberger (GitHub Pages / Netlify).",
+        bullets: [
+          "Grille responsive + hover",
+          "Filtres par catégories + recherche",
+          "Modal détails pour chaque projet"
+        ],
+        tags: ["HTML", "CSS", "JS", "Responsive"],
+        links: [
+          { label: "Détails", url: "#", kind: "details" },
+          { label: "Live", url: "[lien site]", kind: "external" }
+        ],
+        kpis: [
+          { title: "Setup", value: "1 fichier" },
+          { title: "Hébergement", value: "gratuit" }
+        ]
+      }
+    ];
+
+    // ====== 2) UI ======
+    const grid = document.getElementById("grid");
+    const chips = document.getElementById("chips");
+    const search = document.getElementById("search");
+    const clearBtn = document.getElementById("clearBtn");
+    const countLabel = document.getElementById("countLabel");
+
+    // Modal
+    const backdrop = document.getElementById("backdrop");
+    const closeBtn = document.getElementById("closeBtn");
+    const mTitle = document.getElementById("mTitle");
+    const mMeta = document.getElementById("mMeta");
+    const mSummary = document.getElementById("mSummary");
+    const mBullets = document.getElementById("mBullets");
+    const mTags = document.getElementById("mTags");
+    const mLinks = document.getElementById("mLinks");
+    const mKpis = document.getElementById("mKpis");
+
+    // Toast
+    const toast = document.getElementById("toast");
+    function showToast(msg){
+      toast.textContent = msg;
+      toast.style.display = "block";
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => toast.style.display = "none", 2400);
+    }
+
+    // Quick open
+    function openLink(url){
+      if(!url || url.includes("[lien") || url.includes("[email]")){
+        showToast("Remplace d’abord les liens entre crochets.");
+        return;
+      }
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+    window.openLink = openLink;
+
+    // Stats
+    document.getElementById("year").textContent = new Date().getFullYear();
+    document.getElementById("kpiProjects").textContent = PROJECTS.length;
+    const allTags = new Set(PROJECTS.flatMap(p => p.tags || []));
+    document.getElementById("kpiTags").textContent = allTags.size;
+
+    // Filters
+    const categories = ["Tous", ...Array.from(new Set(PROJECTS.map(p => p.category))).sort()];
+    let activeCat = "Tous";
+
+    function renderChips(){
+      chips.innerHTML = "";
+      categories.forEach(cat => {
+        const el = document.createElement("div");
+        el.className = "chip" + (cat === activeCat ? " active" : "");
+        el.textContent = cat;
+        el.onclick = () => {
+          activeCat = cat;
+          renderChips();
+          render();
+        };
+        chips.appendChild(el);
+      });
+    }
+
+    function projectMatches(p, q){
+      if(!q) return true;
+      const hay = [
+        p.title, p.category, p.year, p.summary, p.description,
+        ...(p.tags || [])
+      ].join(" ").toLowerCase();
+      return hay.includes(q.toLowerCase());
+    }
+
+    function render(){
+      const q = (search.value || "").trim();
+      const filtered = PROJECTS.filter(p => {
+        const catOk = (activeCat === "Tous") || (p.category === activeCat);
+        const qOk = projectMatches(p, q);
+        return catOk && qOk;
+      });
+
+      countLabel.textContent = `${filtered.length} / ${PROJECTS.length}`;
+
+      grid.innerHTML = "";
+      filtered.forEach((p, idx) => {
+        const card = document.createElement("article");
+        card.className = "pCard";
+
+        const thumb = document.createElement("div");
+        thumb.className = "thumb";
+        const badge = document.createElement("div");
+        badge.className = "badge";
+        badge.textContent = p.thumbLabel || p.category || "Projet";
+        thumb.appendChild(badge);
+
+        const body = document.createElement("div");
+        body.className = "pBody";
+        const title = document.createElement("div");
+        title.className = "pTitle";
+        title.textContent = p.title;
+
+        const desc = document.createElement("div");
+        desc.className = "pDesc";
+        desc.textContent = p.summary || p.description || "";
+
+        const tagrow = document.createElement("div");
+        tagrow.className = "tagrow";
+        (p.tags || []).slice(0, 5).forEach(t => {
+          const tag = document.createElement("span");
+          tag.className = "tag";
+          tag.textContent = t;
+          tagrow.appendChild(tag);
+        });
+
+        body.appendChild(title);
+        body.appendChild(desc);
+        body.appendChild(tagrow);
+
+        const actions = document.createElement("div");
+        actions.className = "pActions";
+
+        // Always add Details button (modal)
+        const details = document.createElement("a");
+        details.href = "#";
+        details.className = "link primary";
+        details.textContent = "Détails";
+        details.onclick = (e) => { e.preventDefault(); openModal(p); };
+        actions.appendChild(details);
+
+        // External links (optional)
+        (p.links || []).forEach(l => {
+          if(l.kind === "details") return;
+          const a = document.createElement("a");
+          a.className = "link";
+          a.textContent = l.label || "Lien";
+          a.href = l.url || "#";
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          a.onclick = (e) => {
+            if(!l.url || (l.url.includes("[lien") || l.url.includes("[email]"))){
+              e.preventDefault();
+              showToast("Remplace d’abord ce lien entre crochets.");
+            }
+          };
+          actions.appendChild(a);
+        });
+
+        card.appendChild(thumb);
+        card.appendChild(body);
+        card.appendChild(actions);
+
+        // Click anywhere opens modal
+        card.addEventListener("click", (e) => {
+          const isLink = e.target.closest("a");
+          if(isLink) return;
+          openModal(p);
+        });
+
+        grid.appendChild(card);
+      });
+
+      if(filtered.length === 0){
+        const empty = document.createElement("div");
+        empty.className = "card";
+        empty.innerHTML = `<strong>Aucun projet trouvé.</strong><div class="muted">Change le filtre ou la recherche.</div>`;
+        grid.appendChild(empty);
+      }
+    }
+
+    function openModal(p){
+      mTitle.textContent = p.title || "Projet";
+      mMeta.textContent = `${p.category || "—"} · ${p.year || "—"}`;
+
+      mSummary.textContent = p.description || p.summary || "";
+
+      mBullets.innerHTML = "";
+      (p.bullets || []).forEach(b => {
+        const li = document.createElement("li");
+        li.textContent = b;
+        mBullets.appendChild(li);
+      });
+
+      mTags.innerHTML = "";
+      (p.tags || []).forEach(t => {
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = t;
+        mTags.appendChild(tag);
+      });
+
+      mLinks.innerHTML = "";
+      const links = (p.links || []).filter(l => l.kind !== "details");
+      if(links.length === 0){
+        const span = document.createElement("span");
+        span.className = "muted";
+        span.textContent = "Ajoute des liens (code, live, rapport) si tu veux.";
+        mLinks.appendChild(span);
+      } else {
+        links.forEach(l => {
+          const a = document.createElement("a");
+          a.className = "link";
+          a.textContent = l.label || "Lien";
+          a.href = l.url || "#";
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          a.onclick = (e) => {
+            if(!l.url || (l.url.includes("[lien") || l.url.includes("[email]"))){
+              e.preventDefault();
+              showToast("Remplace d’abord ce lien entre crochets.");
+            }
+          };
+          mLinks.appendChild(a);
+        });
+      }
+
+      mKpis.innerHTML = "";
+      const kpis = p.kpis || [];
+      if(kpis.length === 0){
+        const box = document.createElement("div");
+        box.className = "box";
+        box.innerHTML = `<strong>Résultat</strong><span>Ajoute 1–2 métriques (ex: perf, temps, impact).</span>`;
+        mKpis.appendChild(box);
+      } else {
+        kpis.forEach(k => {
+          const box = document.createElement("div");
+          box.className = "box";
+          box.innerHTML = `<strong>${k.title || "KPI"}</strong><span>${k.value || ""}</span>`;
+          mKpis.appendChild(box);
+        });
+      }
+
+      backdrop.style.display = "flex";
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeModal(){
+      backdrop.style.display = "none";
+      document.body.style.overflow = "";
+    }
+
+    backdrop.addEventListener("click", (e) => {
+      if(e.target === backdrop) closeModal();
+    });
+    closeBtn.addEventListener("click", closeModal);
+    document.addEventListener("keydown", (e) => {
+      if(e.key === "Escape" && backdrop.style.display === "flex") closeModal();
+    });
+
+    // Search + clear
+    search.addEventListener("input", render);
+    clearBtn.addEventListener("click", () => {
+      search.value = "";
+      activeCat = "Tous";
+      renderChips();
+      render();
+    });
+
+    // Theme toggle (simple)
+    const themeBtn = document.getElementById("themeBtn");
+    let light = false;
+    themeBtn.addEventListener("click", () => {
+      light = !light;
+      document.documentElement.style.setProperty("--bg", light ? "#f6f8ff" : "#0b1020");
+      document.documentElement.style.setProperty("--panel", light ? "#ffffff" : "#0f1731");
+      document.documentElement.style.setProperty("--text", light ? "#0b1020" : "#eaf0ff");
+      document.documentElement.style.setProperty("--muted", light ? "#334155" : "#b8c4ff");
+    });
+
+    // Init
+    renderChips();
+    render();
+  </script>
 </body>
 </html>
